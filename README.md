@@ -4,6 +4,10 @@ A full stack web app built with Node and Express that allows users to shorten lo
 
 > **NOTICE:** For educational use
 
+**Jeremy Dombrowski** | [@meatflavourdev](https://twitter.com/meatflavourdev)
+
+---
+
 ## Project Description
 ### Goal
 This four-day project will have you building a web app using Node. The app will allow users to shorten long URLs much like TinyURL.com and bit.ly do.
