@@ -2,6 +2,9 @@ const express = require("express");
 const app = express();
 const PORT = 3000; // default port 8080
 
+// config variables
+const shortURLlength = 6;
+
 // Body Parser Middleware - Converts request body from Buffer to String
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
@@ -24,8 +27,8 @@ app.get('/urls', (req, res) => {
 
 app.post('/urls', (req, res) => {
   console.log(`longURL: ${req.body.longURL}`);
-  const { generateRandomString } = require('./shortIDs');
-  const shortID = generateRandomString();
+  const { charsetbase64, generateRandomString } = require('./shortIDs');
+  const shortID = generateRandomString(shortURLlength, charsetbase64);
   urlDatabase[shortID] = req.body.longURL;
   res.redirect(`/urls/${shortID}`);
 });
