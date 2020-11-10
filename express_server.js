@@ -43,6 +43,18 @@ app.get('/urls/new', (req, res) => {
   res.render('urls_new', templateVars);
 });
 
+// Handle shortURLs-- redirect to long URL
+app.post('/urls/:shortURL/delete', (req, res) => {
+  // Error if shortID not found
+  if (!urlDatabase[req.params.shortURL]) {
+    res.status(404).render('error_404');
+    return;
+  }
+  // Delete the key and redirect to index
+  delete urlDatabase[req.params.shortURL];
+  res.redirect(302, '/urls');
+});
+
 app.get('/urls/:shortURL', (req, res) => {
   // Error if shortID not found
   if (!urlDatabase[req.params.shortURL]) {
