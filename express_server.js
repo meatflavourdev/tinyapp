@@ -36,14 +36,28 @@ app.get('/urls/new', (req, res) => {
 });
 
 app.get('/urls/:shortURL', (req, res) => {
+  // Error if shortID not found
+  if (!urlDatabase[req.params.shortURL]) {
+    res.status(404).render('error_404');
+    return;
+  }
+  // Render shortURL page
   const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] };
   res.render('urls_show', templateVars);
 });
 
 // Handle shortURLs-- redirect to long URL
 app.get('/u/:shortURL', (req, res) => {
+  // Error if shortID not found
+  if (!urlDatabase[req.params.shortURL]) {
+    res.status(404).render('error_404');
+    return;
+  }
+  // Redirect to long URL
   res.redirect(301, urlDatabase[req.params.shortURL]);
 });
+
+//@TODO: Handle 404 errors on other routes
 
 // Server start message
 app.listen(PORT, () => {
