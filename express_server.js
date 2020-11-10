@@ -44,6 +44,12 @@ app.get('/urls/:shortURL', (req, res) => {
   res.render('urls_show', templateVars);
 });
 
+// Handle shortURLs-- redirect to long URL
+app.get('/u/:shortURL', (req, res) => {
+  res.redirect(301, urlDatabase[req.params.shortURL]);
+});
+
+// Server start message
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
