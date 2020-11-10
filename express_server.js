@@ -46,7 +46,7 @@ app.get('/urls/new', (req, res) => {
 // Handle shortURLs-- redirect to long URL
 app.post('/urls/:shortURL/delete', (req, res) => {
   // Error if shortID not found
-  if (!urlDatabase[req.params.shortURL]) {
+  if (!(req.params.shortURL in urlDatabase)) {
     res.status(404).render('error_404');
     return;
   }
@@ -57,7 +57,7 @@ app.post('/urls/:shortURL/delete', (req, res) => {
 
 app.get('/urls/:shortURL', (req, res) => {
   // Error if shortID not found
-  if (!urlDatabase[req.params.shortURL]) {
+  if (!(req.params.shortURL in urlDatabase)) {
     res.status(404).render('error_404');
     return;
   }
@@ -69,7 +69,7 @@ app.get('/urls/:shortURL', (req, res) => {
 // Handle shortURLs-- redirect to long URL
 app.get('/u/:shortURL', (req, res) => {
   // Error if shortID not found
-  if (!urlDatabase[req.params.shortURL]) {
+  if (!(req.params.shortURL in urlDatabase)) {
     res.status(404).render('error_404');
     return;
   }
