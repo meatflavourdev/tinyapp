@@ -57,7 +57,7 @@ app.get('/u/:shortURL', (req, res) => {
   res.redirect(301, urlDatabase[req.params.shortURL]);
 });
 
-//@TODO: Handle 404 errors on other routes
+// @TODO Handle 404 errors on other routes
 
 // Server start message
 app.listen(PORT, () => {
