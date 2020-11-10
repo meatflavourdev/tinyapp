@@ -16,6 +16,11 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+app.get('/', (req, res) => {
+  res.redirect(301, '/urls');
+});
+
+
 app.get('/urls.json', (req, res) => {
   res.json(urlDatabase);
 });
