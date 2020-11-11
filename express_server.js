@@ -48,6 +48,10 @@ app.get('/urls', (req, res) => {
 // Authentication
 // --------------------------------
 
+app.get('/register', (req, res) => {
+  res.render('auth_register');
+});
+
 app.post('/login', (req, res) => {
   const username = req.body.username;
   console.log(`Login: ${username}`);
