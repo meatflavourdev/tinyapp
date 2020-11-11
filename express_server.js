@@ -16,10 +16,14 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+// TODO Find way to organize routes-- This is a mess!
+
+// --------------------------------
+// Index
+// --------------------------------
 app.get('/', (req, res) => {
   res.redirect(301, '/urls');
 });
-
 
 app.get('/urls.json', (req, res) => {
   res.json(urlDatabase);
@@ -30,6 +34,17 @@ app.get('/urls', (req, res) => {
   res.render('urls_index', templateVars);
 });
 
+// --------------------------------
+// Authentication
+// --------------------------------
+
+
+
+// --------------------------------
+// Record Mutation
+// --------------------------------
+
+// POST New short URL creation form handler
 app.post('/urls', (req, res) => {
   const { charsetbase64, generateRandomString } = require('./shortIDs');
   const shortID = generateRandomString(shortURLlength, charsetbase64);
@@ -38,12 +53,13 @@ app.post('/urls', (req, res) => {
   res.redirect(`/urls/${shortID}`);
 });
 
+// New URL creation form
 app.get('/urls/new', (req, res) => {
   const templateVars = { urls : urlDatabase };
   res.render('urls_new', templateVars);
 });
 
-// Handle shortURLs-- redirect to long URL
+// DELETE Remove short URL button handler
 app.post('/urls/:shortURL/delete', (req, res) => {
   // Error if shortID not valid
   if (!(req.params.shortURL in urlDatabase)) {
@@ -56,7 +72,7 @@ app.post('/urls/:shortURL/delete', (req, res) => {
   res.redirect(302, '/urls');
 });
 
-// Handle shortURLs edits with POST requests
+// UPDATE Edit short URL form handler
 app.post('/urls/:shortURL', (req, res) => {
   // Error if shortID not valid
   if (!(req.params.shortURL in urlDatabase)) {
@@ -64,11 +80,15 @@ app.post('/urls/:shortURL', (req, res) => {
     res.status(404).render('error_NotFound', templateVars);
     return;
   }
-  // Delete the key and redirect to index
+  // Save edit to the URLdatabase object
   console.log(`UPDATE shortID ${req.params.shortURL} longURL: ${req.body.longURL}`);
   urlDatabase[req.params.shortURL] = req.body.longURL;
   res.redirect(302, '/urls');
 });
+
+// --------------------------------
+// Short URLs
+// --------------------------------
 
 app.get('/urls/:shortURL', (req, res) => {
   // Error if shortID not valid
@@ -92,10 +112,18 @@ app.get('/u/:shortURL', (req, res) => {
   res.redirect(301, urlDatabase[req.params.shortURL]);
 });
 
+// --------------------------------
+// Errors
+// --------------------------------
+
 // Handle 404 errors on other routes
 app.use(function(req, res) {
   res.status(404).render('error_404');
 });
+
+// --------------------------------
+// Server Start
+// --------------------------------
 
 // Server start message
 app.listen(PORT, () => {
