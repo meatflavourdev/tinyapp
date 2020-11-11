@@ -16,6 +16,7 @@
   <body>
     <%- include('../partials/_header'); %>
     <main style="margin: 1em">
+      <div class="container">
       <h3>My URLs</h3>
       <table class="table">
         <thead>
@@ -32,17 +33,18 @@
             <td><a href="/urls/<%= url %>"><%= url %></a></td>
             <td><%= urls[url] %></td>
             <td>
-              <a href="/urls/<%= url %>"><button type="button" class="btn btn-outline-primary">Edit</button></a>
+              <a href="/urls/<%= url %>"><button type="button" class="btn btn-primary">Edit</button></a>
             </td>
             <td>
               <form method="POST" action="/urls/<%= url %>/delete">
-                <button type="submit" class="btn btn-outline-danger">Delete</button>
+                <button type="submit" class="btn btn-danger">Delete</button>
               </form>
             </td>
           </tr>
           <% } %>
         </tbody>
       </table>
+    </div>
     </main>
     <!-- Bootstrap JS -->
     <script

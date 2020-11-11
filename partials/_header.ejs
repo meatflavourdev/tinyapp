@@ -1,7 +1,15 @@
 <header>
-  <nav class="navbar navbar-expand-md navbar-dark bg-success">
+  <nav class="navbar navbar-expand-md navbar-dark bg-primary">
     <a class="navbar-brand mb-0" href="/urls"><span class="navbar-text text-white h4 mb-1">TinyApp</span></a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-toggle="collapse"
+      data-target="#navbarNavAltMarkup"
+      aria-controls="navbarNavAltMarkup"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
@@ -9,19 +17,23 @@
         <a class="nav-item nav-link active" href="/urls">Shortened URLs</a>
         <a class="nav-item nav-link" href="/urls/new">Create Shortlink</a>
       </div>
-    </div>
-
-        <% if (locals.username) { %>
-          <span class="navbar-text mr-4 h5 mb-1 text-white"><%= username %></span>
-          <a href="/logout"><button type="submit" class="btn btn-dark">Logout</button></a>
-        <% } else { %>
-          <form class="form-inline" action="/login" method="POST">
-            <div class="form-group ">
-          <input class="form-control form-control" placeholder="Username" type="text" name="username" style="width: 200px; margin: 0 0.5em">
-          <button type="submit" class="btn btn-dark ">Login</button>
+      <% if (locals.username) { %>
+      <span class="navbar-text mr-4 h5 mb-1 text-white"><%= username %></span>
+      <a href="/logout"><button type="submit" class="btn btn-dark">Logout</button></a>
+      <% } else { %>
+      <form class="form-inline" action="/login" method="POST">
+        <div class="form-group">
+          <input
+            class="form-control form-control"
+            placeholder="Username"
+            type="text"
+            name="username"
+            style="width: 200px; margin: 0 0.5em"
+          />
+          <button type="submit" class="btn btn-dark">Login</button>
         </div>
       </form>
-        <% } %>
-
+      <% } %>
+    </div>
   </nav>
 </header>
