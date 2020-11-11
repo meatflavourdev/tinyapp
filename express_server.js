@@ -45,9 +45,22 @@ app.get('/urls/new', (req, res) => {
 
 // Handle shortURLs-- redirect to long URL
 app.post('/urls/:shortURL/delete', (req, res) => {
-  // Error if shortID not found
+  // Error if shortID not valid
   if (!(req.params.shortURL in urlDatabase)) {
-    res.status(404).render('error_404');
+    const templateVars = { shortURL: req.params.shortURL };
+    res.status(404).render('error_NotFound', templateVars);    return;
+  }
+  // Delete the key and redirect to index
+  delete urlDatabase[req.params.shortURL];
+  res.redirect(302, '/urls');
+});
+
+// Handle shortURLs edits with POST requests
+app.post('/urls/:shortURL', (req, res) => {
+  // Error if shortID not valid
+  if (!(req.params.shortURL in urlDatabase)) {
+    const templateVars = { shortURL: req.params.shortURL };
+    res.status(404).render('error_NotFound', templateVars);
     return;
   }
   // Delete the key and redirect to index
@@ -56,10 +69,10 @@ app.post('/urls/:shortURL/delete', (req, res) => {
 });
 
 app.get('/urls/:shortURL', (req, res) => {
-  // Error if shortID not found
+  // Error if shortID not valid
   if (!(req.params.shortURL in urlDatabase)) {
-    res.status(404).render('error_404');
-    return;
+    const templateVars = { shortURL: req.params.shortURL };
+    res.status(404).render('error_NotFound', templateVars);    return;
   }
   // Render shortURL page
   const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] };
@@ -68,10 +81,10 @@ app.get('/urls/:shortURL', (req, res) => {
 
 // Handle shortURLs-- redirect to long URL
 app.get('/u/:shortURL', (req, res) => {
-  // Error if shortID not found
+  // Error if shortID not valid
   if (!(req.params.shortURL in urlDatabase)) {
-    res.status(404).render('error_404');
-    return;
+    const templateVars = { shortURL: req.params.shortURL };
+    res.status(404).render('error_NotFound', templateVars);    return;
   }
   // Redirect to long URL
   res.redirect(301, urlDatabase[req.params.shortURL]);
