@@ -5,12 +5,15 @@ const PORT = 3000; // default port 8080
 // config variables
 const shortURLlength = 6;
 
-// Body Parser Middleware - Converts request body from Buffer to String
+// Middleware
+const morgan = require("morgan");
 const bodyParser = require("body-parser");
-app.use(bodyParser.urlencoded({extended: true}));
 const cookieParser = require('cookie-parser');
+app.use(morgan('dev'));
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
 
+// Set view engine
 app.set('view engine', 'ejs');
 
 const urlDatabase = {
