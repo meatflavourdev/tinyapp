@@ -54,6 +54,11 @@ app.post('/login', (req, res) => {
   res.redirect(`/urls`);
 });
 
+app.get('/logout', (req, res) => {
+  res.clearCookie('username');
+  res.redirect(`/urls`);
+});
+
 // --------------------------------
 // Record Mutation
 // --------------------------------
