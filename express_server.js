@@ -8,6 +8,8 @@ const shortURLlength = 6;
 // Body Parser Middleware - Converts request body from Buffer to String
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
 
 app.set('view engine', 'ejs');
 
@@ -17,6 +19,11 @@ const urlDatabase = {
 };
 
 // TODO Find way to organize routes-- This is a mess!
+
+app.use(function(req, res, next) {
+  res.locals.username = req.cookies.username;
+  next();
+});
 
 // --------------------------------
 // Index
@@ -38,7 +45,14 @@ app.get('/urls', (req, res) => {
 // Authentication
 // --------------------------------
 
-
+app.post('/login', (req, res) => {
+  const username = req.body.username;
+  console.log(`Login: ${username}`);
+  // Set 'username' for 'mins'
+  const mins = 5;
+  res.cookie('username', username, { expires: new Date(Date.now() + mins * 60000), httpOnly: true });
+  res.redirect(`/urls`);
+});
 
 // --------------------------------
 // Record Mutation
