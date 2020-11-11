@@ -31,9 +31,9 @@ app.get('/urls', (req, res) => {
 });
 
 app.post('/urls', (req, res) => {
-  console.log(`longURL: ${req.body.longURL}`);
   const { charsetbase64, generateRandomString } = require('./shortIDs');
   const shortID = generateRandomString(shortURLlength, charsetbase64);
+  console.log(`CREATE shortID ${shortID} longURL: ${req.body.longURL}`);
   urlDatabase[shortID] = req.body.longURL;
   res.redirect(`/urls/${shortID}`);
 });
@@ -51,6 +51,7 @@ app.post('/urls/:shortURL/delete', (req, res) => {
     res.status(404).render('error_NotFound', templateVars);    return;
   }
   // Delete the key and redirect to index
+  console.log(`DELETE shortID ${req.params.shortURL} longURL: ${urlDatabase[req.params.shortURL]}`);
   delete urlDatabase[req.params.shortURL];
   res.redirect(302, '/urls');
 });
@@ -64,7 +65,8 @@ app.post('/urls/:shortURL', (req, res) => {
     return;
   }
   // Delete the key and redirect to index
-  delete urlDatabase[req.params.shortURL];
+  console.log(`UPDATE shortID ${req.params.shortURL} longURL: ${req.body.longURL}`);
+  urlDatabase[req.params.shortURL] = req.body.longURL;
   res.redirect(302, '/urls');
 });
 
