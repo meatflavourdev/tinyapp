@@ -115,6 +115,13 @@ const setCookie = function(res, userID) {
   return true;
 };
 
+const checkAuth = function(req, res, next) {
+  if (req.cookies.user in users) {
+    return next();
+  }
+  return res.redirect('/login');
+};
+
 // --------------------------------
 // MIDDLEWARE
 // --------------------------------
@@ -203,7 +210,7 @@ app.post("/urls", (req, res) => {
 });
 
 // New URL creation form
-app.get("/urls/new", (req, res) => {
+app.get("/urls/new", checkAuth, (req, res) => {
   const templateVars = { urls: urlDatabase };
   res.render("urls_new", templateVars);
 });
