@@ -164,6 +164,13 @@ app.get('/logout', (req, res) => {
   res.redirect(`/urls`);
 });
 
+app.get('/user/:userID', (req, res) => {
+  const legalStatus = ['welcome'];
+  const status = legalStatus.includes(req.query.status) ? req.query.status : null;
+  const user = getUser(req.params.userID, users);
+  res.render('user', { user, status });
+});
+
 // --------------------------------
 // Record Mutation
 // --------------------------------
