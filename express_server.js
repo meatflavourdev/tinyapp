@@ -80,7 +80,9 @@ const checkUser = function(password, user) {
   }
 };
 
-// TODO Get Validation Working
+// TODO Correctly Display Error Message on Client
+// TODO Refactor validation and error object
+// TODO Refactor error handling with middleware validators
 const createUser = function(userInput, userDataObject, cb) {
   const { email, password, passwordConfirm } = userInput;
   // eslint-disable-next-line camelcase
