@@ -76,6 +76,7 @@ const findUser = function(email, userDataObject) {
   return user || false;
 };
 
+// TODO Get Validation Working
 const createUser = function(userInput, userDataObject, cb) {
   const { email, password, passwordConfirm } = userInput;
   if(validator.isEmpty(email, { ignore_whitespace: true })) return cb({email: { valid: false, message: 'Please enter an email address'}});
