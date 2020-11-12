@@ -78,6 +78,8 @@ app.get('/register', (req, res) => {
   res.render('auth_register');
 });
 
+// TODO Input Validation
+// TODO Error Handling
 app.post('/register', (req, res) => {
   // Store user object, set cookie to user ID and redirect to index
   const id = generateRandomString(USER_ID_LENGTH, charsetbase64);
