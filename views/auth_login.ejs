@@ -11,15 +11,29 @@
       integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
       crossorigin="anonymous"
     />
-    <title>Error 404 | TinyApp</title>
+    <title>Login | TinyApp</title>
   </head>
   <body>
     <%- include('../partials/_header'); %>
-    <main style="margin: 1em">
-      <div class="container text-center">
-        <h3>Error 404</h3>
-        <p>The requested URL was not found</p>
-        <a href="/urls/"><button type="button" class="btn btn-primary">Home</button></a>
+    <main class="container d-flex justify-content-center">
+      <div class="col-md-8 col-12">
+        <div class="card text-center mt-4">
+          <div class="card-header">
+            <p class="h3 my-2">Login</p>
+          </div>
+          <!-- Default form subscription -->
+          <div class="d-flex justify-content-center">
+            <form class="text-center border border-light p-5 col-md-10" action="/Login" method="post">
+              <!-- Name -->
+              <input type="email" name="email" id="registerFormEmail" class="form-control form-control-lg mb-4" placeholder="E-mail" />
+              <!-- Email -->
+              <input type="password" name="password" id="registerFormPassword" class="form-control form-control-lg mb-4" placeholder="password" />
+              <!-- Sign in button -->
+              <button class="btn btn-dark btn-block btn-lg" type="submit">Sign in</button>
+            </form>
+          </div>
+          <!-- Default form subscription -->
+        </div>
       </div>
     </main>
     <!-- Bootstrap JS -->
