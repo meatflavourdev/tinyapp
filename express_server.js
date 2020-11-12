@@ -71,6 +71,13 @@ const findUser = function(email, userDataObject) {
   return user[1] || false;
 };
 
+const checkUser = function(password, user) {
+  console.log(`password: ${password} user: ${user.password}`);
+  if (!password || password !== user.password) {
+    return false;
+  } else {
+    return true;
+  }
 };
 
 // TODO Get Validation Working
