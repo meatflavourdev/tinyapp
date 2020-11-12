@@ -19,13 +19,13 @@ app.use(cookieParser());
 app.set("view engine", "ejs");
 
 const urlDatabase = {
-  b2xVn2: "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com",
+  "b2xVn2": { longURL: "http://www.lighthouselabs.ca", userID: "GDSd45_Dbb" },
+  "9sm5xK": { longURL: "http://www.google.ca", userID: "Hsd62s3VV-" },
 };
 
 const users = {
   // eslint-disable-next-line camelcase
-  GDSd45_Dbb: { id: "GDSd45_Dbb", email: "zenimus@gmail.com", password: "password123" },
+  "GDSd45_Dbb": { id: "GDSd45_Dbb", email: "zenimus@gmail.com", password: "password123" },
   "Hsd62s3VV-": { id: "Hsd62s3VV-", email: "user2@example.com", password: "dishwasher-funk" },
 };
 
