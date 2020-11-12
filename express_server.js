@@ -93,8 +93,8 @@ const createUser = function(userInput, userDataObject, cb) {
   return cb(null, userDataObject[id]);
 };
 
-const setCookie = function(user) {
-  res.cookie('user', id, { expires: new Date(Date.now() + COOKIE_EXPIRE_MINS * 60000), httpOnly: true });
+const setCookie = function(res, userID) {
+  res.cookie('user', userID, { expires: new Date(Date.now() + COOKIE_EXPIRE_MINS * 60000), httpOnly: true });
   return true;
 };
 
