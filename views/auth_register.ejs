@@ -23,11 +23,11 @@
           </div>
           <!-- Default form subscription -->
           <div class="d-flex justify-content-center">
-            <form class="text-center border border-light p-5 col-md-10" action="#!">
+            <form class="text-center border border-light p-5 col-md-10" action="/register" method="post">
               <!-- Name -->
-              <input type="email" id="defaultSubscriptionFormPassword" class="form-control form-control-lg mb-4" placeholder="E-mail" />
+              <input type="email" name="email" id="registerFormEmail" class="form-control form-control-lg mb-4" placeholder="E-mail" />
               <!-- Email -->
-              <input type="password" id="defaultSubscriptionFormEmail" class="form-control form-control-lg mb-4" placeholder="password" />
+              <input type="password" name="password" id="registerFormPassword" class="form-control form-control-lg mb-4" placeholder="password" />
               <!-- Sign in button -->
               <button class="btn btn-dark btn-block btn-lg" type="submit">Sign in</button>
             </form>
