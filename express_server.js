@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const PORT = 3000; // default port 8080
+const ENV = 'development';
 
 // config variables
 const shortURLlength = 6;
@@ -20,6 +21,19 @@ const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
 };
+
+
+/**
+ * Output to console if in development environment
+ * @param  {...any} ...args Variables or strings to output to console
+ */
+const devlog = function(...args) {
+  if(ENV === 'development') {
+    console.log(...args);
+  }
+};
+
+console.log(users);
 
 // TODO Find way to organize routes-- This is a mess!
 
