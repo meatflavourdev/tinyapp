@@ -90,7 +90,7 @@ const createUser = function(userInput, userDataObject, cb) {
     id = generateRandomString(USER_ID_LENGTH, charsetbase64);
   } while (id in userDataObject);
   userDataObject[id] = { id, email ,password };
-  return cb(null, userDataObject[id]);
+  return cb(null, { id , email });
 };
 
 const setCookie = function(res, userID) {
