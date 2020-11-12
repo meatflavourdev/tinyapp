@@ -18,7 +18,7 @@
         <a class="nav-item nav-link" href="/urls/new">Create Shortlink</a>
       </div>
       <% if (locals.user) { %>
-      <span class="navbar-text mr-4 h5 mb-1 text-white"><%= user.email %></span>
+        <a href="/user/<%= user.id %>"><span class="navbar-text mr-4 h5 mb-1 text-white"><%= user.email %></span></a>
       <a href="/logout"><button type="submit" class="btn btn-dark">Logout</button></a>
       <% } else { %>
         <div class="navbar-nav ml-auto">
