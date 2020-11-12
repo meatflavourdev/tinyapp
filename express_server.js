@@ -68,7 +68,9 @@ const findUser = function(email, userDataObject) {
   const user = Object.entries(userDataObject).find((value) => {
     if (value[1].email === email) return true;
   });
-  return user || false;
+  return user[1] || false;
+};
+
 };
 
 // TODO Get Validation Working
