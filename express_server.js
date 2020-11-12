@@ -134,7 +134,7 @@ app.get('/register', (req, res) => {
   res.render('auth_register');
 });
 
-app.post('/register', (req, res, next) => {
+app.post('/register', (req, res) => {
   const { email, password, passwordConfirm } = req.body; // Get data from registration form
   createUser({ email, password, passwordConfirm }, users, (err, user) => {
     if(err) {
