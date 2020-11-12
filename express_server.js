@@ -142,10 +142,8 @@ app.post('/register', (req, res) => {
       res.status(400);
       return res.render('auth_register');
     }
-      console.log(`Success: ${user.toString()}`);
-      return res.render('auth_register', { user });
-      //setCookie(user.id); // Log the user in with a cookie
-      //res.redirect(`/user/${user.id}?status=welcome`); // Set status query variable to trigger welcome message
+      setCookie(res, user.id); // Log the user in with a cookie
+      return res.redirect(`/user/${user.id}?status=welcome`); // Set status query variable to trigger welcome message
   });
 });
 
