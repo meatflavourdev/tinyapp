@@ -6,7 +6,6 @@ const PORT = 3000; // default port 8080
 const COOKIE_EXPIRE_MINS = 10;
 const USER_ID_LENGTH = 9;
 const SHORTURL_LENGTH = 6;
-const ENV = 'development';
 
 // Middleware
 const morgan = require("morgan");
@@ -44,9 +43,10 @@ const users = {
  * @param  {...any} ...args Variables or strings to output to console
  */
 const devlog = function(...args) {
-  if(ENV === 'development') {
-    console.log(...args);
+  if(req.app.get('env') === 'development') {
+    return console.log(...args);
   }
+  return;
 };
 
 /**
