@@ -162,14 +162,18 @@ app.post("/register", (req, res) => {
   });
 });
 
-// TODO Error Handling
-
 app.post("/login", (req, res) => {
-  const username = req.body.username;
-  console.log(`Login: ${username}`);
-  // Set 'username' for COOKIE_EXPIRE_MINS
-  res.cookie("username", username, { expires: new Date(Date.now() + COOKIE_EXPIRE_MINS * 60000), httpOnly: true });
-  return res.redirect(`/urls`);
+  const { email, password } = req.body;
+  console.log(`Login: ${email} password: ${password}`);
+  // Check that user exists and password is correct
+  const user = findUser(email, users);
+  console.log(`user: `, user);
+  if (!user || !checkUser(password, user)) {
+    res.status(403);
+    return res.render("auth_login");
+  }
+  setCookie(res, user.id);
+  return res.redirect(`/user/${user.id}`);
 });
 
 app.get("/logout", (req, res) => {
