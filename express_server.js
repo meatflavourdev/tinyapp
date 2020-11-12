@@ -239,9 +239,16 @@ app.get('/u/:shortURL', (req, res) => {
 // Errors
 // --------------------------------
 
-// Handle 404 errors on other routes
-app.use(function(req, res) {
-  res.status(404).render('error_404');
+// error handler
+app.use(function(err, req, res, next) {
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.status = err.status;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
+  console.log(err);
+  // render the error page
+  res.status(err.status || 500);
+  res.render('error');
 });
 
 // --------------------------------
