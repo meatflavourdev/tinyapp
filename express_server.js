@@ -1,10 +1,11 @@
 const express = require("express");
 const app = express();
+const { charsetbase64, generateRandomString } = require('./shortIDs');
 const PORT = 3000; // default port 8080
+const COOKIE_EXPIRE_MINS = 10;
+const USER_ID_LENGTH = 9;
+const SHORTURL_LENGTH = 6;
 const ENV = 'development';
-
-// config variables
-const shortURLlength = 6;
 
 // Middleware
 const morgan = require("morgan");
@@ -22,6 +23,16 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+const users = {
+  "GDSd45_Dbb":
+  { id: 'GDSd45_Dbb',
+    email: 'zenimus@gmail.com',
+    password: 'password123' },
+ 'Hsd62s3VV-':
+  { id: 'Hsd62s3VV-',
+    email: 'user2@example.com',
+    password: 'dishwasher-funk' }
+};
 
 /**
  * Output to console if in development environment
@@ -54,6 +65,7 @@ app.get('/urls.json', (req, res) => {
 });
 
 app.get('/urls', (req, res) => {
+  console.log(users);
   const templateVars = { urls : urlDatabase };
   res.render('urls_index', templateVars);
 });
@@ -66,12 +78,22 @@ app.get('/register', (req, res) => {
   res.render('auth_register');
 });
 
+app.post('/register', (req, res) => {
+  // Store user object, set cookie to user ID and redirect to index
+  const id = generateRandomString(USER_ID_LENGTH, charsetbase64);
+  const email = req.body.email;
+  const password = req.body.password;
+  devlog(`Register | id: ${id} email: ${email} password: ${password} ----------------`);
+  users[id] = { id, email, password };
+  res.cookie('user', id, { expires: new Date(Date.now() + COOKIE_EXPIRE_MINS * 60000), httpOnly: true });
+  res.redirect(`/urls`);
+});
+
 app.post('/login', (req, res) => {
   const username = req.body.username;
   console.log(`Login: ${username}`);
-  // Set 'username' for 'mins'
-  const mins = 5;
-  res.cookie('username', username, { expires: new Date(Date.now() + mins * 60000), httpOnly: true });
+  // Set 'username' for COOKIE_EXPIRE_MINS
+  res.cookie('username', username, { expires: new Date(Date.now() + COOKIE_EXPIRE_MINS * 60000), httpOnly: true });
   res.redirect(`/urls`);
 });
 
@@ -86,8 +108,7 @@ app.get('/logout', (req, res) => {
 
 // POST New short URL creation form handler
 app.post('/urls', (req, res) => {
-  const { charsetbase64, generateRandomString } = require('./shortIDs');
-  const shortID = generateRandomString(shortURLlength, charsetbase64);
+  const shortID = generateRandomString(SHORTURL_LENGTH, charsetbase64);
   console.log(`CREATE shortID ${shortID} longURL: ${req.body.longURL}`);
   urlDatabase[shortID] = req.body.longURL;
   res.redirect(`/urls/${shortID}`);
