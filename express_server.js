@@ -171,6 +171,7 @@ app.post("/register", (req, res) => {
   });
 });
 
+// TODO Error display in client(?)
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
   console.log(`Login: ${email} password: ${password}`);
