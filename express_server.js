@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const validator = require('validator');
 const { charsetbase64, generateRandomString } = require('./shortIDs');
 const PORT = 3000; // default port 8080
 const COOKIE_EXPIRE_MINS = 10;
@@ -34,6 +35,10 @@ const users = {
     password: 'dishwasher-funk' }
 };
 
+// --------------------------------
+// HELPER FUNCTIONS
+// --------------------------------
+
 /**
  * Output to console if in development environment
  * @param  {...any} ...args Variables or strings to output to console
@@ -44,12 +49,60 @@ const devlog = function(...args) {
   }
 };
 
-console.log(users);
+/**
+ * Get user object from users stotage object by the user ID
+ * @param  {String} userID Primary key identifying user
+ * @param {Object} userDataObject An object containing key value pair of userIDs to user objects
+ * @return {Object} User object { id, email } or null
+ */
+const getUser = function(userID, userDataObject) {
+  if(userID in userDataObject) {
+    const { id, email } = userDataObject[userID];
+    return { id, email };
+  }
+  return null;
+};
 
-// TODO Find way to organize routes-- This is a mess!
+/**
+ * Get user object from users stotage object by the email
+ * @param  {String} email The user email address
+ * @param {Object} userDataObject An object containing key value pair of userIDs to user objects
+ * @return {Object} User object { id, email } or null
+ */
+const findUser = function(email, userDataObject) {
+  const user = Object.entries(userDataObject).find((value) => {
+    if(value[1].email === email) return true;
+  });
+  return user || false;
+};
 
+const createUser = function(userInput, userDataObject, cb) {
+  const { email, password, passwordConfirm } = userInput;
+  if(validator.isEmpty(email, { ignore_whitespace: true })) return cb({email: { valid: false, message: 'Please enter an email address'}});
+  if(!validator.isEmail(email)) return cb({email: { valid: false, message: 'Please enter a valid email address'}});
+  if(validator.isEmpty(password, { ignore_whitespace: true })) return cb({password: { valid: false, message: 'Please enter a password'}});
+  if(validator.isEmpty(passwordConfirm, { ignore_whitespace: true })) return cb({passwordConfirm: { valid: false, message: 'Please enter a password confirmation'}});;
+  if(!validator.equals(password, passwordConfirm)) return cb({password: { valid: false, message: 'Passwords do not match'}, passwordConfirm: { valid: false, message: ''}});
+  if(findUser(email, userDataObject)) return cb({email: { valid: false, message: 'Email address already in use'}});
+  // Everything is OK
+  let id;
+  do {
+    id = generateRandomString(USER_ID_LENGTH, charsetbase64);
+  } while (id in userDataObject);
+  userDataObject[id] = { id, email ,password };
+  return cb(null, userDataObject[id]);
+};
+
+const setCookie = function(user) {
+  res.cookie('user', id, { expires: new Date(Date.now() + COOKIE_EXPIRE_MINS * 60000), httpOnly: true });
+  return true;
+};
+
+// --------------------------------
+// MIDDLEWARE
+// --------------------------------
 app.use(function(req, res, next) {
-  res.locals.username = req.cookies.username;
+  res.locals.user = getUser(req.cookies.user, users);
   next();
 });
 
@@ -65,7 +118,6 @@ app.get('/urls.json', (req, res) => {
 });
 
 app.get('/urls', (req, res) => {
-  console.log(users);
   const templateVars = { urls : urlDatabase };
   res.render('urls_index', templateVars);
 });
@@ -74,33 +126,41 @@ app.get('/urls', (req, res) => {
 // Authentication
 // --------------------------------
 
+app.get('/login', (req, res) => {
+  res.render('auth_login');
+});
+
 app.get('/register', (req, res) => {
   res.render('auth_register');
 });
 
-// TODO Input Validation
-// TODO Error Handling
-app.post('/register', (req, res) => {
-  // Store user object, set cookie to user ID and redirect to index
-  const id = generateRandomString(USER_ID_LENGTH, charsetbase64);
-  const email = req.body.email;
-  const password = req.body.password;
-  devlog(`Register | id: ${id} email: ${email} password: ${password} ----------------`);
-  users[id] = { id, email, password };
-  res.cookie('user', id, { expires: new Date(Date.now() + COOKIE_EXPIRE_MINS * 60000), httpOnly: true });
-  res.redirect(`/urls`);
+app.post('/register', (req, res, next) => {
+  const { email, password, passwordConfirm } = req.body; // Get data from registration form
+  createUser({ email, password, passwordConfirm }, users, (err, user) => {
+    if(err) {
+      res.locals.err = err;
+      res.status(400);
+      return res.render('auth_register');
+    }
+      console.log(`Success: ${user.toString()}`);
+      return res.render('auth_register', { user });
+      //setCookie(user.id); // Log the user in with a cookie
+      //res.redirect(`/user/${user.id}?status=welcome`); // Set status query variable to trigger welcome message
+  });
 });
+
+// TODO Error Handling
 
 app.post('/login', (req, res) => {
   const username = req.body.username;
   console.log(`Login: ${username}`);
   // Set 'username' for COOKIE_EXPIRE_MINS
   res.cookie('username', username, { expires: new Date(Date.now() + COOKIE_EXPIRE_MINS * 60000), httpOnly: true });
-  res.redirect(`/urls`);
+  return res.redirect(`/urls`);
 });
 
 app.get('/logout', (req, res) => {
-  res.clearCookie('username');
+  res.clearCookie('user');
   res.redirect(`/urls`);
 });
 
