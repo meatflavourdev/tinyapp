@@ -183,7 +183,7 @@ const getURLindex = function(req, res, next) {
 // --------------------------------
 // Index
 // --------------------------------
-app.get("/", checkAuth, (req, res) => {
+app.get("/", (req, res) => {
   return res.redirect(302, "/urls");
 });
 
