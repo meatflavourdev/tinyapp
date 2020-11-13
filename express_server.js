@@ -252,7 +252,7 @@ app.get("/user/:userID", (req, res) => {
 // --------------------------------
 
 // POST New short URL creation form handler
-app.post("/urls", (req, res) => {
+app.post("/urls", checkAuth, (req, res) => {
   const url = addURL(req.body.longURL, req.session.user, false);
   res.redirect(`/urls/${url.shortID}`);
 });
@@ -264,7 +264,7 @@ app.get("/urls/new", checkAuth, (req, res) => {
 });
 
 // DELETE Remove short URL button handler
-app.post("/urls/:shortURL/delete", (req, res) => {
+app.post("/urls/:shortURL/delete", checkAuth, (req, res) => {
   // Error if shortID not valid
   if (!(req.params.shortURL in urlDatabase)) {
     const templateVars = { shortURL: req.params.shortURL };
@@ -278,7 +278,7 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 });
 
 // UPDATE Edit short URL form handler
-app.post("/urls/:shortURL", (req, res) => {
+app.post("/urls/:shortURL", checkAuth, (req, res) => {
   // Error if shortID not valid
   if (!(req.params.shortURL in urlDatabase)) {
     const templateVars = { shortURL: req.params.shortURL };
@@ -295,12 +295,11 @@ app.post("/urls/:shortURL", (req, res) => {
 // Short URLs
 // --------------------------------
 
-app.get("/urls/:shortURL", (req, res) => {
+app.get("/urls/:shortURL", checkAuth, (req, res) => {
   // Error if shortID not valid
   if (!(req.params.shortURL in urlDatabase)) {
     const templateVars = { shortURL: req.params.shortURL };
-    res.status(404).render("error_NotFound", templateVars);
-    return;
+    return res.status(404).render("error_NotFound", templateVars);
   }
   // Render shortURL page
   const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] };
