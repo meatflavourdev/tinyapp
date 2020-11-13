@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 const validator = require("validator");
 const { charsetbase64, generateRandomString } = require("./shortIDs");
 const PORT = 3000; // default port 8080
-const COOKIE_EXPIRE_MINS = 10;
+const COOKIE_EXPIRE_MINS = 60;
 const USER_ID_LENGTH = 9;
 const SHORTURL_LENGTH = 6;
 
