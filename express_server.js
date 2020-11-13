@@ -135,7 +135,7 @@ const checkAuth = function(req, res, next) {
 // MIDDLEWARE
 // --------------------------------
 app.use(function(req, res, next) {
-  res.locals.user = getUser(req.cookies.user, users);
+  res.locals.user = getUser(req.cookies.user, users) || {}; // Empty user object if no user
   next();
 });
 
