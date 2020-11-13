@@ -1,0 +1,19 @@
+<div class="container">
+  <h3>Public URLs</h3>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Short URL</th>
+        <th scope="col">Long URL</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% for(let url of urls) { %>
+      <tr>
+        <td><a href="/urls/<%= url.shortID %>"><%= url.shortID %></a></td>
+        <td><%= url.longURL %></td>
+      </tr>
+      <% } %>
+    </tbody>
+  </table>
+</div>
