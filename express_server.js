@@ -180,8 +180,8 @@ const getURLindex = function(req, res, next) {
 // --------------------------------
 // Index
 // --------------------------------
-app.get("/", (req, res) => {
-  res.redirect(301, "/urls");
+app.get("/", checkAuth, (req, res) => {
+  return res.redirect(302, "/urls");
 });
 
 app.get("/urls.json", getURLindex, (req, res) => {
