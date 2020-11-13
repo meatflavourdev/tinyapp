@@ -19,8 +19,17 @@ app.use(cookieParser());
 app.set("view engine", "ejs");
 
 const urlDatabase = {
-  "b2xVn2": { longURL: "http://www.lighthouselabs.ca", userID: "GDSd45_Dbb" },
-  "9sm5xK": { longURL: "http://www.google.ca", userID: "Hsd62s3VV-" },
+  "b2xVn2": { longURL: "http://www.lighthouselabs.ca", userID: "GDSd45_Dbb", public: true },
+  "9sm5xK": { longURL: "http://www.google.ca", userID: "Hsd62s3VV-", public: false },
+  "sdf1a2": { longURL: "https://developer.okta.com/", userID: "GDSd45_Dbb", public: true },
+  "AS-vV_": { longURL: "https://expressjs.com/en/resources/middleware/", userID: "Hsd62s3VV-", public: false },
+  "2mtVwR": { longURL: "https://dev.to/heithemmoumni/build-a-blog-with-svelte-strapi-and-apollo-2ad5", userID: "GDSd45_Dbb", public: false },
+  "WWeTF7": { longURL: "https://medium.com/@mroth/how-i-built-emojitracker-179cfd8238ac", userID: "Hsd62s3VV-", public: true },
+  "44HRst": { longURL: "https://fs.blog/mental-models/#learning_to_think_better", userID: "GDSd45_Dbb", public: false },
+  "QwtQ9e": { longURL: "https://dev.to/karinesabatier/getting-started-with-svelte-3289", userID: "Hsd62s3VV-", public: true },
+  "ZIJ2Tu": { longURL: "https://uibakery.io/", userID: "GDSd45_Dbb", public: false },
+  "CRi8hs": { longURL: "https://www.inverse.com/", userID: "Hsd62s3VV-", public: true },
+
 };
 
 const users = {
