@@ -13,10 +13,27 @@ const app = express();
 // Middleware
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
-const cookieParser = require("cookie-parser");
+const cookieSession = require("cookie-session");
 app.use(morgan("dev"));
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cookieParser());
+app.use(
+  cookieSession({
+    name: "session",
+    keys: [
+      "8bqv3m7fvxheu1QLJx5JvvXSv",
+      "384V5D5I8nFEwRmiQ55nBiGmz",
+      "aFav38T7nM6Du04JI7474Os38",
+      "F4biAwxJWy5Kcih92dCw65B97",
+      "0nRig2RdReeXU2YWaT32l1rdg",
+      "6qiRgLT4H9RtdVX2CEe8omTGR",
+      "1gLhSonS8MYCSx42o1jFzKO2M",
+      "DiWASDT35OfyIg7M4eXscG5KU",
+      "2u149610yVRY4fJB27m615ZMu",
+      "13Qv5i2S9fN3lw75SNKG6ImL1",
+    ],
+    maxAge: COOKIE_EXPIRE_MINS * 60 * 1000,
+  })
+);
 
 // Set view engine
 app.set("view engine", "ejs");
@@ -98,7 +115,7 @@ const validPassword = function(password, user) {
 };
 
 const checkAuth = function(req, res, next) {
-  if (req.cookies.user in users) {
+  if (req.session.user in users) {
     return next();
   }
   return res.redirect('/login');
@@ -135,8 +152,8 @@ const createUser = function(userInput, userDataObject, cb) {
   return cb(null, { id, email });
 };
 
-const setCookie = function(res, userID) {
-  res.cookie("user", userID, { expires: new Date(Date.now() + COOKIE_EXPIRE_MINS * 60000), httpOnly: true });
+const setCookie = function(req, userID) {
+  req.session.user = userID;
   return true;
 };
 
@@ -144,7 +161,7 @@ const setCookie = function(res, userID) {
 // MIDDLEWARE
 // --------------------------------
 app.use(function(req, res, next) {
-  res.locals.user = getUser(req.cookies.user, users) || {}; // Empty user object if no user
+  res.locals.user = getUser(req.session.user, users) || {}; // Empty user object if no user
   next();
 });
 
@@ -190,7 +207,7 @@ app.post("/register", (req, res) => {
       res.status(400);
       return res.render("auth_register");
     }
-    setCookie(res, user.id); // Log the user in with a cookie
+    setCookie(req, user.id); // Log the user in with a cookie
     return res.redirect(`/user/${user.id}?status=welcome`); // Set status query variable to trigger welcome message
   });
 });
@@ -206,12 +223,12 @@ app.post("/login", (req, res) => {
     res.status(403);
     return res.render("auth_login");
   }
-  setCookie(res, user.id);
+  setCookie(req, user.id);
   return res.redirect(`/user/${user.id}`);
 });
 
 app.get("/logout", (req, res) => {
-  res.clearCookie("user");
+  req.session = null;
   res.redirect(`/urls`);
 });
 
