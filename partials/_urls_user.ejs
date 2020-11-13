@@ -27,12 +27,20 @@
           <a href="/urls/<%= url.shortID %>"><button type="button" class="btn btn-primary">Edit</button></a>
         </td>
         <td>
-          <form method="POST" action="/urls/<%= url %>/delete">
+          <form method="POST" action="/urls/<%= url.shortID %>/delete">
             <button type="submit" class="btn btn-danger">Delete</button>
           </form>
         </td>
       </tr>
       <% } %>
+      <tr>
+        <td class="text-center font">
+          <a href="/urls/new"><i class="fa fa-plus-square fa-lg"></i></a>
+        </td>
+        <td>
+          <a href="/urls/new">Create a new URL</a>
+        </td>
+      </tr>
     </tbody>
   </table>
 </div>
