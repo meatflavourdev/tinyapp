@@ -1,11 +1,14 @@
 const express = require("express");
-const app = express();
+const bcrypt = require('bcrypt');
 const validator = require("validator");
 const { charsetbase64, generateRandomString } = require("./shortIDs");
 const PORT = 3000; // default port 8080
 const COOKIE_EXPIRE_MINS = 10;
 const USER_ID_LENGTH = 9;
 const SHORTURL_LENGTH = 6;
+
+// Initialize Express
+const app = express();
 
 // Middleware
 const morgan = require("morgan");
@@ -35,8 +38,8 @@ const urlDatabase = {
 
 const users = {
   // eslint-disable-next-line camelcase
-  "GDSd45_Dbb": { id: "GDSd45_Dbb", email: "zenimus@gmail.com", password: "password123" },
-  "Hsd62s3VV-": { id: "Hsd62s3VV-", email: "user2@example.com", password: "dishwasher-funk" },
+  "GDSd45_Dbb": { id: "GDSd45_Dbb", email: "zenimus@gmail.com", password: "$2b$10$ByI86Q9Rd9pxasa.Fhl5muIG1dt.RlChQf971zmO4pf10IuIvPE1e" },
+  "Hsd62s3VV-": { id: "Hsd62s3VV-", email: "user2@example.com", password: "$2b$10$8guuOuUXAlfPFa8taeeY..tBFyYKhlsPYewoTFyIgbofrzvXRDiee" },
 };
 
 // --------------------------------
@@ -81,13 +84,23 @@ const findUser = function(email, userDataObject) {
   return user[1] || false;
 };
 
-const checkUser = function(password, user) {
+/**
+ * Check if password input exsits and is valid given a user object
+ * @param  {String} password password to validate
+ * @param  {Object} user user to compare against
+ */
+const validPassword = function(password, user) {
   console.log(`password: ${password} user: ${user.password}`);
-  if (!password || password !== user.password) {
-    return false;
-  } else {
-    return true;
+  const valid = bcrypt.compareSync(password, user.password);
+  if (!password || !valid) { return false; }
+  return true;
+};
+
+const checkAuth = function(req, res, next) {
+  if (req.cookies.user in users) {
+    return next();
   }
+  return res.redirect('/login');
 };
 
 // TODO Correctly Display Error Message on Client
@@ -116,20 +129,14 @@ const createUser = function(userInput, userDataObject, cb) {
   do {
     id = generateRandomString(USER_ID_LENGTH, charsetbase64);
   } while (id in userDataObject);
-  userDataObject[id] = { id, email, password };
+  const encryptedPassword = bcrypt.hashSync(password, 10);
+  userDataObject[id] = { id, email, encryptedPassword };
   return cb(null, { id, email });
 };
 
 const setCookie = function(res, userID) {
   res.cookie("user", userID, { expires: new Date(Date.now() + COOKIE_EXPIRE_MINS * 60000), httpOnly: true });
   return true;
-};
-
-const checkAuth = function(req, res, next) {
-  if (req.cookies.user in users) {
-    return next();
-  }
-  return res.redirect('/login');
 };
 
 // --------------------------------
@@ -194,7 +201,7 @@ app.post("/login", (req, res) => {
   // Check that user exists and password is correct
   const user = findUser(email, users);
   console.log(`user: `, user);
-  if (!user || !checkUser(password, user)) {
+  if (!user || !validPassword(password, user)) {
     res.status(403);
     return res.render("auth_login");
   }
