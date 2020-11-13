@@ -172,7 +172,10 @@ app.use(function(req, res, next) {
 
 const getURLindex = function(req, res, next) {
   res.locals.urls = Object.values(urlDatabase).filter((value) => {
-    if (value.public || value.userID === res.locals.user.id) return true;
+    if (value.public || value.userID !== res.locals.user.id) return true;
+  });
+  res.locals.user.urls = Object.values(urlDatabase).filter((value) => {
+    if (value.userID === res.locals.user.id) return true;
   });
   return next();
 };
