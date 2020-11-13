@@ -51,8 +51,6 @@ const urlDatabase = {
   "CRi8hs": { shortID: "CRi8hs", longURL: "https://www.inverse.com/", userID: "Hsd62s3VV-", public: true },
 };
 
-//const URLs =
-
 const users = {
   // eslint-disable-next-line camelcase
   "GDSd45_Dbb": { id: "GDSd45_Dbb", email: "zenimus@gmail.com", password: "$2b$10$ByI86Q9Rd9pxasa.Fhl5muIG1dt.RlChQf971zmO4pf10IuIvPE1e" },
@@ -62,6 +60,13 @@ const users = {
 // --------------------------------
 // HELPER FUNCTIONS
 // --------------------------------
+
+const addURL = function(longURL, userID, public = false) {
+  const shortID = generateRandomString(SHORTURL_LENGTH, charsetbase64);
+  console.log(`CREATE shortID ${shortID} longURL: ${longURL} userID: ${userID} public: ${public}`);
+  urlDatabase[shortID] = { shortID, longURL, userID, public };
+  return urlDatabase[shortID];
+};
 
 /**
  * Output to console if in development environment
@@ -245,10 +250,8 @@ app.get("/user/:userID", (req, res) => {
 
 // POST New short URL creation form handler
 app.post("/urls", (req, res) => {
-  const shortID = generateRandomString(SHORTURL_LENGTH, charsetbase64);
-  console.log(`CREATE shortID ${shortID} longURL: ${req.body.longURL}`);
-  urlDatabase[shortID] = req.body.longURL;
-  res.redirect(`/urls/${shortID}`);
+  const url = addURL(req.body.longURL, req.session.user, false);
+  res.redirect(`/urls/${url.shortID}`);
 });
 
 // New URL creation form
