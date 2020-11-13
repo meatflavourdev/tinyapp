@@ -22,18 +22,26 @@
         <thead>
           <tr>
             <th scope="col">Short URL</th>
+            <th scope="col">Visibility</th>
             <th scope="col">Long URL</th>
             <th scope="col">Edit</th>
             <th scope="col">Delete</th>
           </tr>
         </thead>
         <tbody>
-          <% for(let url in urls) { %>
+          <% for(let url of urls) { %>
           <tr>
-            <td><a href="/urls/<%= url %>"><%= url %></a></td>
-            <td><%= urls[url].longURL %></td>
+            <td><a href="/urls/<%= url.shortID %>"><%= url.shortID %></a></td>
             <td>
-              <a href="/urls/<%= url %>"><button type="button" class="btn btn-primary">Edit</button></a>
+              <% if (url.public === true) { %>
+              public
+              <% } else { %>
+                private
+              <% } %>
+            </td>
+            <td><%= url.longURL %></td>
+            <td>
+              <a href="/urls/<%= url.shortID %>"><button type="button" class="btn btn-primary">Edit</button></a>
             </td>
             <td>
               <form method="POST" action="/urls/<%= url %>/delete">

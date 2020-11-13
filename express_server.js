@@ -19,18 +19,19 @@ app.use(cookieParser());
 app.set("view engine", "ejs");
 
 const urlDatabase = {
-  "b2xVn2": { longURL: "http://www.lighthouselabs.ca", userID: "GDSd45_Dbb", public: true },
-  "9sm5xK": { longURL: "http://www.google.ca", userID: "Hsd62s3VV-", public: false },
-  "sdf1a2": { longURL: "https://developer.okta.com/", userID: "GDSd45_Dbb", public: true },
-  "AS-vV_": { longURL: "https://expressjs.com/en/resources/middleware/", userID: "Hsd62s3VV-", public: false },
-  "2mtVwR": { longURL: "https://dev.to/heithemmoumni/build-a-blog-with-svelte-strapi-and-apollo-2ad5", userID: "GDSd45_Dbb", public: false },
-  "WWeTF7": { longURL: "https://medium.com/@mroth/how-i-built-emojitracker-179cfd8238ac", userID: "Hsd62s3VV-", public: true },
-  "44HRst": { longURL: "https://fs.blog/mental-models/#learning_to_think_better", userID: "GDSd45_Dbb", public: false },
-  "QwtQ9e": { longURL: "https://dev.to/karinesabatier/getting-started-with-svelte-3289", userID: "Hsd62s3VV-", public: true },
-  "ZIJ2Tu": { longURL: "https://uibakery.io/", userID: "GDSd45_Dbb", public: false },
-  "CRi8hs": { longURL: "https://www.inverse.com/", userID: "Hsd62s3VV-", public: true },
-
+  "b2xVn2": { shortID: "b2xVn2", longURL: "http://www.lighthouselabs.ca", userID: "GDSd45_Dbb", public: true },
+  "sdf1a2": { shortID: "sdf1a2", longURL: "https://developer.okta.com/", userID: "GDSd45_Dbb", public: true },
+  "9sm5xK": { shortID: "9sm5xK", longURL: "http://www.google.ca", userID: "Hsd62s3VV-", public: false },
+  "AS-vV_": { shortID: "AS-vV_", longURL: "https://expressjs.com/en/resources/middleware/", userID: "Hsd62s3VV-", public: false },
+  "2mtVwR": { shortID: "2mtVwR", longURL: "https://dev.to/heithemmoumni/build-a-blog-with-svelte-strapi-and-apollo-2ad5", userID: "GDSd45_Dbb", public: false },
+  "WWeTF7": { shortID: "WWeTF7", longURL: "https://medium.com/@mroth/how-i-built-emojitracker-179cfd8238ac", userID: "Hsd62s3VV-", public: true },
+  "44HRst": { shortID: "44HRst", longURL: "https://fs.blog/mental-models/#learning_to_think_better", userID: "GDSd45_Dbb", public: false },
+  "QwtQ9e": { shortID: "QwtQ9e", longURL: "https://dev.to/karinesabatier/getting-started-with-svelte-3289", userID: "Hsd62s3VV-", public: true },
+  "ZIJ2Tu": { shortID: "ZIJ2Tu", longURL: "https://uibakery.io/", userID: "GDSd45_Dbb", public: false },
+  "CRi8hs": { shortID: "CRi8hs", longURL: "https://www.inverse.com/", userID: "Hsd62s3VV-", public: true },
 };
+
+//const URLs =
 
 const users = {
   // eslint-disable-next-line camelcase
@@ -139,6 +140,13 @@ app.use(function(req, res, next) {
   next();
 });
 
+const getURLindex = function(req, res, next) {
+  res.locals.urls = Object.values(urlDatabase).filter((value) => {
+    if (value.public || value.userID === res.locals.user.id) return true;
+  });
+  return next();
+};
+
 // --------------------------------
 // Index
 // --------------------------------
@@ -146,13 +154,12 @@ app.get("/", (req, res) => {
   res.redirect(301, "/urls");
 });
 
-app.get("/urls.json", (req, res) => {
-  res.json(urlDatabase);
+app.get("/urls.json", getURLindex, (req, res) => {
+  res.json(res.locals.urls);
 });
 
-app.get("/urls", (req, res) => {
-  const templateVars = { urls: urlDatabase };
-  res.render("urls_index", templateVars);
+app.get("/urls", getURLindex,  (req, res) => {
+  res.render("urls_index");
 });
 
 // --------------------------------
