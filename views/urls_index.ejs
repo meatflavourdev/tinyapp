@@ -31,7 +31,7 @@
           <% for(let url in urls) { %>
           <tr>
             <td><a href="/urls/<%= url %>"><%= url %></a></td>
-            <td><%= urls[url] %></td>
+            <td><%= urls[url].longURL %></td>
             <td>
               <a href="/urls/<%= url %>"><button type="button" class="btn btn-primary">Edit</button></a>
             </td>
