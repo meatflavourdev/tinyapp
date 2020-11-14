@@ -104,6 +104,20 @@ const editURL = function(shortID, userID, longURL, public) {
 };
 
 /**
+ * Remove an existing url in the URL storage
+ * @param  {String} shortID The ID of the URL to modify
+ * @param  {String} userID  The userID of the current user
+ * @return {boolen} TRUE on success, FALSE on failure
+ */
+const removeURL = function(shortID, userID) {
+  const url = getURL(shortID);
+  if (!url) return false;
+  if (userID !== url.userID) return false;
+  delete urlDatabase[shortID];
+  return !getURL(shortID);
+};
+
+/**
  * Get user object from users stotage object by the user ID
  * @param  {String} userID Primary key identifying user
  * @param {Object} userDataObject An object containing key value pair of userIDs to user objects
