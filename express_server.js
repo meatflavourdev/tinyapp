@@ -297,11 +297,14 @@ app.post("/urls/:shortID/delete", checkAuth, (req, res) => {
 
 // UPDATE Edit short URL form handler
 app.post("/urls/:shortID", checkAuth, (req, res) => {
+  const url = getURL(req.params.shortID);
   // Error if shortID not valid
-  if (!(req.params.shortID in urlDatabase)) {
-    const templateVars = { shortID: req.params.shortID };
-    res.status(404).render("error_NotFound", templateVars);
-    return;
+  if (!url) {
+    return res.status(404).render("error_NotFound", { shortID: req.params.shortID });
+  }
+  // Check Ownership
+  if (req.session.user !== url.userID) {
+    return res.status(401).render("error_NotAuthorized", url);
   }
   // Save edit to the URLdatabase object
   console.log(`UPDATE shortID ${req.params.shortID} longURL: ${req.body.longURL}`);
