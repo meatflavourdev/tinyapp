@@ -162,6 +162,18 @@ const setCookie = function(req, userID) {
   return true;
 };
 
+/**
+ * Retrieve the URL object from the URL storage object
+ * @param  {String} id The shortID/shortID
+ */
+const getURL = function (id) {
+  // Error if shortID not valid
+  if (!(id in urlDatabase)) {
+    return false;
+  }
+  return urlDatabase[id];
+};
+
 // --------------------------------
 // MIDDLEWARE
 // --------------------------------
