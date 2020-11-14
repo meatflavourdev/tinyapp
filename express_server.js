@@ -308,14 +308,17 @@ app.post("/urls/:shortID", checkAuth, (req, res) => {
 // --------------------------------
 
 app.get("/urls/:shortID", checkAuth, (req, res) => {
+  const url = getURL(req.params.shortID);
   // Error if shortID not valid
-  if (!(req.params.shortURL in urlDatabase)) {
-    const templateVars = { shortURL: req.params.shortURL };
-    return res.status(404).render("error_NotFound", templateVars);
+  if (!url) {
+    return res.status(404).render("error_NotFound", { shortID: req.params.shortID });
   }
-  // Render shortURL page
-  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] };
-  res.render("urls_show", templateVars);
+  // Check Ownership
+  if (req.session.user !== url.userID) {
+    return res.status(401).render("error_NotAuthorized", url);
+  }
+  // Render shortID page
+  res.render("urls_show", url);
 });
 
 // Handle shortIDs-- redirect to long URL
