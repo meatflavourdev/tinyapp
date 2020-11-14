@@ -134,7 +134,7 @@ const getUser = function(userID, userDataObject) {
  * Get user object from users stotage object by the email
  * @param  {String} email The user email address
  * @param {Object} userDataObject An object containing key value pair of userIDs to user objects
- * @return {Object} User object { id, email } or null
+ * @return {Object} User object or null
  */
 const findUser = function(email, userDataObject) {
   const user = Object.entries(userDataObject).find((value) => {
@@ -151,7 +151,7 @@ const findUser = function(email, userDataObject) {
  */
 const validPassword = function(password, user) {
   const valid = bcrypt.compareSync(password, user.password);
-  if (!password || !valid) { return false; }
+  if (!password || !valid) return false;
   return true;
 };
 
@@ -266,7 +266,6 @@ app.post("/login", (req, res) => {
   setCookie(req, user.id);
   return res.redirect(`/urls`);
 });
-
 app.get("/logout", (req, res) => {
   req.session = null;
   return res.redirect(`/urls`);
