@@ -260,7 +260,7 @@ app.post("/register", (req, res) => {
       return res.render("auth_register");
     }
     setCookie(req, user.id); // Log the user in with a cookie
-    return res.redirect(`/urls?status=welcome`); // Set status query variable to trigger welcome message
+    return res.redirect('/urls?status=welcome'); // Set status query variable to trigger welcome message
   });
 });
 
