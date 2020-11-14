@@ -270,7 +270,6 @@ app.post("/register", (req, res) => {
 // TODO Error display in client(?)
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
-  console.log(`Login: ${email} password: ${password}`);
   // Check that user exists and password is correct
   const user = findUser(email, users);
   if (!user || !validPassword(password, user)) {
