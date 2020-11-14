@@ -238,6 +238,9 @@ app.get("/urls", getURLindex,  (req, res) => {
 // --------------------------------
 
 app.get("/login", (req, res) => {
+  if (req.query.status === "notAuthorized") {
+    res.locals.notAuthorized = true;
+  }
   return res.render("auth_login");
 });
 
