@@ -161,23 +161,13 @@ const validPassword = function(password, user) {
 // TODO Refactor error handling with middleware validators
 const createUser = function(userInput, userDataObject, cb) {
   const { email, password, passwordConfirm } = userInput;
-  // eslint-disable-next-line camelcase
-  if (validator.isEmpty(email, { ignore_whitespace: true }))
-    return cb({ email: { valid: false, message: "Please enter an email address" } });
-  if (!validator.isEmail(email)) return cb({ email: { valid: false, message: "Please enter a valid email address" } });
-  // eslint-disable-next-line camelcase
-  if (validator.isEmpty(password, { ignore_whitespace: true }))
-    return cb({ password: { valid: false, message: "Please enter a password" } });
-  // eslint-disable-next-line camelcase
-  if (validator.isEmpty(passwordConfirm, { ignore_whitespace: true }))
-    return cb({ passwordConfirm: { valid: false, message: "Please enter a password confirmation" } });
-  if (!validator.equals(password, passwordConfirm))
-    return cb({
-      password: { valid: false, message: "Passwords do not match" },
-      passwordConfirm: { valid: false, message: "" },
-    });
-  if (findUser(email, userDataObject)) return cb({ email: { valid: false, message: "Email address already in use" } });
-  // Everything is OK
+  if (validator.isEmpty(email)) return cb({ field: ['email'], message: "Please enter an email address" });
+  if (!validator.isEmail(email)) return cb({ field: ['email'], message: "Please enter a valid email address" });
+  if (validator.isEmpty(password)) return cb({ field: ['password'], message: "Please enter a password" });
+  if (validator.isEmpty(passwordConfirm)) return cb({ field: ['passwordConfirm'], message: "Please enter a password confirmation" });
+  if (!validator.equals(password, passwordConfirm)) return cb({ field: ['password', 'passwordConfirm'], message: "Passwords do not match" });
+  if (findUser(email, userDataObject)) return cb({ field: ['email'], message: "Email address already in use" });
+  // Everything is OKW
   let id;
   do {
     id = generateRandomString(USER_ID_LENGTH, charsetbase62);
