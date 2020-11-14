@@ -306,8 +306,13 @@ app.post("/urls/:shortID/delete", checkAuth, (req, res) => {
   if (req.session.user !== url.userID) {
     return res.status(401).render("error_NotAuthorized", url);
   }
-  // Delete the key and redirect to index
-  delete urlDatabase[req.params.shortID];
+  // Delete the URL and redirect to index
+  const removedURL = removeURL(req.params.shortID, req.session.user);
+  if (!removedURL) {
+    console.log(`removedURL: ${removedURL}`);
+    console.log(`url: `, getURL(req.params.shortID));
+    return res.status(500).render("error_500"); // Something went wrong
+  }
   res.redirect(302, "/urls");
 });
 
