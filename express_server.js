@@ -331,8 +331,8 @@ app.post("/urls/:shortID", checkAuth, (req, res) => {
   const longURL = req.body.longURL;
   const public = req.body.public ? true : false;
   const modifiedURL = editURL(url.shortID, req.session.user, longURL, public);
-  if(!modifiedURL) {
-    return res.status(500).render("error_500");
+  if (!modifiedURL) {
+    return res.status(500).render("error_500"); // Something went wrong
   }
   res.redirect(302, "/urls");
 });
