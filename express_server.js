@@ -270,7 +270,6 @@ app.post("/login", (req, res) => {
   console.log(`Login: ${email} password: ${password}`);
   // Check that user exists and password is correct
   const user = findUser(email, users);
-  console.log(`user: `, user);
   if (!user || !validPassword(password, user)) {
     res.status(403);
     return res.render("auth_login");
