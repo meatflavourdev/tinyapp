@@ -271,8 +271,7 @@ app.post("/login", (req, res) => {
   // Check that user exists and password is correct
   const user = findUser(email, users);
   if (!user || !validPassword(password, user)) {
-    res.status(403);
-    return res.render("auth_login");
+    return res.status(403).render("auth_login");
   }
   setCookie(req, user.id);
   return res.redirect(`/urls`);
