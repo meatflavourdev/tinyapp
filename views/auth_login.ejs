@@ -16,15 +16,14 @@
         <div class="card-header">
           <p class="h3 my-2">Login</p>
         </div>
-
+        <% if (locals.error) { %>
+        <div class="alert alert-danger" style="margin-bottom: -1em;" role="alert">
+          Invalid email or password
+        </div>
+        <% } %>
         <!-- Default form subscription -->
         <div class="d-flex justify-content-center">
           <form class="text-center p-5 col-md-10" action="/login" method="post">
-            <% if (locals.error) { %>
-              <div class="alert alert-danger" style="margin-left: -1em; margin-right: -1em;" role="alert">
-                Invalid email or password
-              </div>
-              <% } %>
             <!-- Name -->
             <input
               type="email"
