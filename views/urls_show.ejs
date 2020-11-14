@@ -24,6 +24,19 @@
               style="width: 400px; margin: 1em"
             />
             <button type="submit" class="btn btn-primary btn-lg">Submit</button>
+            <div class="form-check form-control-lg ml-4">
+              <input
+                class="form-check-input form-control-lg"
+                type="checkbox"
+                name="public"
+                value="true"
+                id="publicCheck"
+                <% if(public) { %>
+                checked
+                <% } %>
+              />
+              <label class="form-check-label form-control-lg" for="publicCheck"> Public </label>
+            </div>
           </div>
         </form>
       </div>
