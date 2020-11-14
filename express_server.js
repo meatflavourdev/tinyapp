@@ -228,7 +228,7 @@ app.post("/register", (req, res) => {
       return res.render("auth_register");
     }
     setCookie(req, user.id); // Log the user in with a cookie
-    return res.redirect(`/user/${user.id}?status=welcome`); // Set status query variable to trigger welcome message
+    return res.redirect(`/urls?status=welcome`); // Set status query variable to trigger welcome message
   });
 });
 
@@ -244,19 +244,12 @@ app.post("/login", (req, res) => {
     return res.render("auth_login");
   }
   setCookie(req, user.id);
-  return res.redirect(`/user/${user.id}`);
+  return res.redirect(`/urls`);
 });
 
 app.get("/logout", (req, res) => {
   req.session = null;
   res.redirect(`/urls`);
-});
-
-app.get("/user/:userID", (req, res) => {
-  const legalStatus = ["welcome"];
-  const status = legalStatus.includes(req.query.status) ? req.query.status : null;
-  const user = getUser(req.params.userID, users);
-  res.render("user", { user, status });
 });
 
 // --------------------------------
@@ -265,7 +258,8 @@ app.get("/user/:userID", (req, res) => {
 
 // POST New short URL creation form handler
 app.post("/urls", checkAuth, (req, res) => {
-  const url = addURL(req.body.longURL, req.session.user, false);
+  const public = req.body.public ? true : false;
+  const url = addURL(req.body.longURL, req.session.user, public);
   res.redirect(`/urls/${url.shortID}`);
 });
 
