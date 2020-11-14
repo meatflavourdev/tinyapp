@@ -69,14 +69,16 @@ const addURL = function(longURL, userID, public = false) {
 };
 
 /**
- * Output to console if in development environment
- * @param  {...any} ...args Variables or strings to output to console
+ * Retrieve the URL object from the URL storage object
+ * @param  {String} id The shortID/shortID
+ * @return {Object} Return the url object corresponding with the specified ID or false
  */
-const devlog = function(...args) {
-  if (app.get("env") === "development") {
-    return console.log(...args);
+const getURL = function (id) {
+  // Error if shortID not valid
+  if (!(id in urlDatabase)) {
+    return false;
   }
-  return;
+  return urlDatabase[id];
 };
 
 /**
@@ -160,18 +162,6 @@ const createUser = function(userInput, userDataObject, cb) {
 const setCookie = function(req, userID) {
   req.session.user = userID;
   return true;
-};
-
-/**
- * Retrieve the URL object from the URL storage object
- * @param  {String} id The shortID/shortID
- */
-const getURL = function (id) {
-  // Error if shortID not valid
-  if (!(id in urlDatabase)) {
-    return false;
-  }
-  return urlDatabase[id];
 };
 
 // --------------------------------
