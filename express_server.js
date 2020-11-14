@@ -226,11 +226,11 @@ app.get("/", (req, res) => {
 });
 
 app.get("/urls.json", getURLindex, (req, res) => {
-  res.json(res.locals.urls);
+  return res.json(res.locals.urls);
 });
 
 app.get("/urls", getURLindex,  (req, res) => {
-  res.render("urls_index");
+  return res.render("urls_index");
 });
 
 // --------------------------------
@@ -238,11 +238,11 @@ app.get("/urls", getURLindex,  (req, res) => {
 // --------------------------------
 
 app.get("/login", (req, res) => {
-  res.render("auth_login");
+  return res.render("auth_login");
 });
 
 app.get("/register", (req, res) => {
-  res.render("auth_register");
+  return res.render("auth_register");
 });
 
 app.post("/register", (req, res) => {
@@ -275,7 +275,7 @@ app.post("/login", (req, res) => {
 
 app.get("/logout", (req, res) => {
   req.session = null;
-  res.redirect(`/urls`);
+  return res.redirect(`/urls`);
 });
 
 // --------------------------------
@@ -286,13 +286,13 @@ app.get("/logout", (req, res) => {
 app.post("/urls", checkAuth, (req, res) => {
   const public = req.body.public ? true : false;
   const url = addURL(req.body.longURL, req.session.user, public);
-  res.redirect(`/urls/${url.shortID}`);
+  return res.redirect(`/urls/${url.shortID}`);
 });
 
 // New URL creation form
 app.get("/urls/new", checkAuth, (req, res) => {
   const templateVars = { urls: urlDatabase };
-  res.render("urls_new", templateVars);
+  return res.render("urls_new", templateVars);
 });
 
 // DELETE Remove short URL button handler
@@ -313,7 +313,7 @@ app.post("/urls/:shortID/delete", checkAuth, (req, res) => {
     console.log(`url: `, getURL(req.params.shortID));
     return res.status(500).render("error_500"); // Something went wrong
   }
-  res.redirect(302, "/urls");
+  return res.redirect(302, "/urls");
 });
 
 // UPDATE Edit short URL form handler
@@ -334,7 +334,7 @@ app.post("/urls/:shortID", checkAuth, (req, res) => {
   if (!modifiedURL) {
     return res.status(500).render("error_500"); // Something went wrong
   }
-  res.redirect(302, "/urls");
+  return res.redirect(302, "/urls");
 });
 
 // --------------------------------
@@ -352,7 +352,7 @@ app.get("/urls/:shortID", checkAuth, (req, res) => {
     return res.status(401).render("error_NotAuthorized", url);
   }
   // Render shortID page
-  res.render("urls_show", url);
+  return res.render("urls_show", url);
 });
 
 // Handle shortIDs-- redirect to long URL
@@ -363,7 +363,7 @@ app.get("/u/:shortID", (req, res) => {
     return res.status(404).render("error_NotFound", { shortID: req.params.shortID });
   }
   // Redirect to long URL
-  res.redirect(302, url.longURL);
+  return res.redirect(302, url.longURL);
 });
 
 // --------------------------------
@@ -379,7 +379,7 @@ app.use(function(err, req, res, next) {
   console.log(err);
   // render the error page
   res.status(err.status || 500);
-  res.render("error");
+  return res.render("error");
 });
 
 // --------------------------------
