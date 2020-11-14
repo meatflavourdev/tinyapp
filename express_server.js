@@ -1,7 +1,7 @@
 const express = require("express");
 const bcrypt = require('bcrypt');
 const validator = require("validator");
-const { charsetbase64, generateRandomString } = require("./shortIDs");
+const { charsetbase64, charsetbase62, generateRandomString } = require("./shortIDs");
 const PORT = 3000; // default port 8080
 const COOKIE_EXPIRE_MINS = 60;
 const USER_ID_LENGTH = 9;
@@ -180,7 +180,7 @@ const createUser = function(userInput, userDataObject, cb) {
   // Everything is OK
   let id;
   do {
-    id = generateRandomString(USER_ID_LENGTH, charsetbase64);
+    id = generateRandomString(USER_ID_LENGTH, charsetbase62);
   } while (id in userDataObject);
   const encryptedPassword = bcrypt.hashSync(password, 10);
   userDataObject[id] = { id, email, encryptedPassword };
