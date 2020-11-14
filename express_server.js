@@ -121,12 +121,11 @@ const removeURL = function(shortID, userID) {
  * Get user object from users stotage object by the user ID
  * @param  {String} userID Primary key identifying user
  * @param {Object} userDataObject An object containing key value pair of userIDs to user objects
- * @return {Object} User object { id, email } or null
+ * @return {Object} User object or null
  */
 const getUser = function(userID, userDataObject) {
   if (userID in userDataObject) {
-    const { id, email } = userDataObject[userID];
-    return { id, email };
+    return userDataObject[userID];
   }
   return null;
 };
