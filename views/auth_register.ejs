@@ -12,7 +12,7 @@
           <p class="h3 my-2">Register</p>
         </div>
         <% if (locals.err) { %>
-        <div class="alert alert-danger" role="alert"><%= err %></div>
+        <div class="alert alert-danger" style="margin-bottom: -1em;" role="alert"><%= err.message %></div>
         <% } %>
         <!-- Default form subscription -->
         <div class="d-flex justify-content-center">
@@ -41,12 +41,12 @@
               placeholder="Confirm password"
             />
             <!-- Sign in button -->
-            <button class="btn btn-dark btn-block btn-lg" type="submit">Sign in</button>
+            <button class="btn btn-dark btn-block btn-lg" type="submit">Confirm</button>
           </form>
         </div>
         <!-- Default form subscription -->
       </div>
-      <% console.log(locals.err) %> <% if (locals.email) { %> <%= locals.id %> <%= locals.email %> <% } %>
+      <% console.log(locals.err) %>
     </div>
   </main>
   <%- include('../partials/_body_foot'); %>
