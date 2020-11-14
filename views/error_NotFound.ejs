@@ -7,9 +7,9 @@
   <%- include('../partials/_header'); %>
   <main style="margin: 1em">
     <div class="container text-center">
-      <h3>Error - <%= shortURL %> Not Found</h3>
-      <p>That ID was not found</p>
-      <a href="/urls/"><button type="button" class="btn btn-primary">Home</button></a>
+      <h2>Not Found</h2>
+      <p>"<%= shortURL %>" was not found</p>
+      <a href="/urls/"><button type="button" class="btn btn-outline-danger">Go Back</button></a>
     </div>
   </main>
   <%- include('../partials/_body_foot'); %>
