@@ -157,13 +157,6 @@ const validPassword = function(password, user) {
   return true;
 };
 
-const checkAuth = function(req, res, next) {
-  if (req.session.user in users) {
-    return next();
-  }
-  return res.redirect('/login?status=notAuthorized');
-};
-
 // TODO Correctly Display Error Message on Client
 // TODO Refactor validation and error object
 // TODO Refactor error handling with middleware validators
@@ -216,6 +209,13 @@ const getURLindex = function(req, res, next) {
     if (value.userID === res.locals.user.id) return true;
   });
   return next();
+};
+
+const checkAuth = function(req, res, next) {
+  if (req.session.user in users) {
+    return next();
+  }
+  return res.redirect('/login?status=notAuthorized');
 };
 
 // --------------------------------
