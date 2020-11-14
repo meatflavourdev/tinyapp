@@ -130,7 +130,7 @@ const checkAuth = function(req, res, next) {
   if (req.session.user in users) {
     return next();
   }
-  return res.redirect('/login');
+  return res.redirect('/login?status=notAuthorized');
 };
 
 // TODO Correctly Display Error Message on Client
