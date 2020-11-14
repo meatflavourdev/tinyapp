@@ -307,8 +307,12 @@ app.post("/urls/:shortID", checkAuth, (req, res) => {
     return res.status(401).render("error_NotAuthorized", url);
   }
   // Save edit to the URLdatabase object
-  console.log(`UPDATE shortID ${req.params.shortID} longURL: ${req.body.longURL}`);
-  urlDatabase[req.params.shortID] = req.body.longURL;
+  const longURL = req.body.longURL;
+  const public = req.body.public ? true : false;
+  const modifiedURL = editURL(url.shortID, req.session.user, longURL, public);
+  if(!modifiedURL) {
+    return res.status(500).render("error_500");
+  }
   res.redirect(302, "/urls");
 });
 
