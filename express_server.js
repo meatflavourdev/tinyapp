@@ -60,10 +60,15 @@ const users = {
 // --------------------------------
 // HELPER FUNCTIONS
 // --------------------------------
-
+/**
+ * Adds a url to the URL storage
+ * @param  {String} longURL The full URL to the link to be shortened
+ * @param  {String} userID  The userID of the user shortening a link
+ * @param  {boolen} public=false The public visibility setting of the link
+ * @return {Object} The created url object
+ */
 const addURL = function(longURL, userID, public = false) {
   const shortID = generateRandomString(SHORTID_LENGTH, charsetbase64);
-  console.log(`CREATE shortID ${shortID} longURL: ${longURL} userID: ${userID} public: ${public}`);
   urlDatabase[shortID] = { shortID, longURL, userID, public };
   return urlDatabase[shortID];
 };
