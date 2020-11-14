@@ -283,14 +283,16 @@ app.get("/urls/new", checkAuth, (req, res) => {
 
 // DELETE Remove short URL button handler
 app.post("/urls/:shortID/delete", checkAuth, (req, res) => {
+  const url = getURL(req.params.shortID);
   // Error if shortID not valid
-  if (!(req.params.shortID in urlDatabase)) {
-    const templateVars = { shortID: req.params.shortID };
-    res.status(404).render("error_NotFound", templateVars);
-    return;
+  if (!url) {
+    return res.status(404).render("error_NotFound", { shortID: req.params.shortID });
+  }
+  // Check Ownership
+  if (req.session.user !== url.userID) {
+    return res.status(401).render("error_NotAuthorized", url);
   }
   // Delete the key and redirect to index
-  console.log(`DELETE shortID ${req.params.shortID} longURL: ${urlDatabase[req.params.shortID]}`);
   delete urlDatabase[req.params.shortID];
   res.redirect(302, "/urls");
 });
