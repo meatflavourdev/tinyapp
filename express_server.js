@@ -151,7 +151,6 @@ const findUser = function(email, userDataObject) {
  * @param  {Object} user user to compare against
  */
 const validPassword = function(password, user) {
-  console.log(`password: ${password} user: ${user.password}`);
   const valid = bcrypt.compareSync(password, user.password);
   if (!password || !valid) { return false; }
   return true;
@@ -315,8 +314,6 @@ app.post("/urls/:shortID/delete", checkAuth, (req, res) => {
   // Delete the URL and redirect to index
   const removedURL = removeURL(req.params.shortID, req.session.user);
   if (!removedURL) {
-    console.log(`removedURL: ${removedURL}`);
-    console.log(`url: `, getURL(req.params.shortID));
     return res.status(500).render("error_500"); // Something went wrong
   }
   return res.redirect(302, "/urls");
