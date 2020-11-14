@@ -87,6 +87,23 @@ const getURL = function (id) {
 };
 
 /**
+ * Modify an existing url in the URL storage
+ * @param  {String} shortID The ID of the URL to modify
+ * @param  {String} userID  The userID of the current user
+ * @param  {String} longURL The full URL to be updated
+ * @param  {boolen} public=false The public visibility setting of the link to be set
+ * @return {Object} The modified url object or false
+ */
+const editURL = function(shortID, userID, longURL, public) {
+  const url = getURL(shortID);
+  if (!url) return false;
+  if (userID !== url.userID) return false;
+  urlDatabase[shortID].longURL = longURL;
+  urlDatabase[shortID].public = public;
+  return urlDatabase[shortID];
+};
+
+/**
  * Get user object from users stotage object by the user ID
  * @param  {String} userID Primary key identifying user
  * @param {Object} userDataObject An object containing key value pair of userIDs to user objects
