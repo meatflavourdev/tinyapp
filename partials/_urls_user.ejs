@@ -1,53 +1,67 @@
 <% if (user.id) { %>
-<div class="container">
-  <h3>My URLs</h3>
-  <table class="table">
-    <thead>
-      <tr>
-        <th scope="col">Short URL</th>
-        <th scope="col">Visibility</th>
-        <th scope="col">Long URL</th>
-        <th scope="col">Edit</th>
-        <th scope="col">Delete</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% for(let url of user.urls) { %>
-      <tr>
-        <td><a href="/urls/<%= url.shortID %>"><%= url.shortID %></a></td>
-        <td>
-          <% if (url.public === true) { %>
-          public
-          <% } else { %>
-            private
+<section class="py-2">
+  <div class="container">
+    <h2 class="py-2">My URLs</h2>
+    <div class="card">
+      <table class="table">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">Short URL</th>
+            <th scope="col">Visibility</th>
+            <th scope="col">Long URL</th>
+            <th scope="col">Edit</th>
+            <th scope="col">Delete</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for(let url of user.urls) { %>
+          <tr>
+            <td><a href="/urls/<%= url.shortID %>"><%= url.shortID %></a></td>
+            <td>
+              <% if (url.public === true) { %>
+              public
+              <% } else { %>
+                private
+              <% } %>
+            </td>
+            <td><%= url.longURL %></td>
+            <td>
+              <a href="/urls/<%= url.shortID %>"><button type="button" class="btn btn-primary">Edit</button></a>
+            </td>
+            <td>
+              <form method="POST" action="/urls/<%= url.shortID %>/delete">
+                <button type="submit" class="btn btn-danger">Delete</button>
+              </form>
+            </td>
+          </tr>
           <% } %>
-        </td>
-        <td><%= url.longURL %></td>
-        <td>
-          <a href="/urls/<%= url.shortID %>"><button type="button" class="btn btn-primary">Edit</button></a>
-        </td>
-        <td>
-          <form method="POST" action="/urls/<%= url.shortID %>/delete">
-            <button type="submit" class="btn btn-danger">Delete</button>
-          </form>
-        </td>
-      </tr>
-      <% } %>
-      <tr>
-        <td class="text-center font">
-          <a href="/urls/new"><i class="fa fa-plus-square fa-lg"></i></a>
-        </td>
-        <td>
-          <a href="/urls/new">Create a new URL</a>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+        </tbody>
+      </table>
+    </div>
+
+      <div class="card my-2 p-3 bg-light">
+        <table>
+          <tr class="pt-2">
+            <td class="text-center">
+              <a href="/urls/new"><button type="button" class="btn btn-outline-dark"><i class="fa fa-plus pr-2" aria-hidden="true"></i>Shorten a new link</button></a>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+  </div>
+</section>
 <% } else { %>
   <div class="container">
-    <div class="alert alert-success h6" role="alert">
-      <a href="/login">Login</a> or <a href="/register">Create and Account</a> and add your own URLS!
-    </div>
+    <section class="jumbotron text-center">
+      <div class="container">
+        <h1>Login to Get Started!</h1>
+        <p class="lead text-muted px-4">It's quick and easy to create and account. Click the buttons and get ur link on. Show your link to everyone or just share it with friends-- you know how it works.</p>
+        <p>
+          <a href="/login" class="btn btn-primary my-2">Login</a>
+          <a href="/register" class="btn btn-secondary my-2">Register</a>
+        </p>
+      </div>
+    </section>
   </div>
 <% } %>
