@@ -173,8 +173,8 @@ const createUser = function(userInput, userDataObject, cb) {
     id = generateRandomString(USER_ID_LENGTH, charsetbase62);
   } while (id in userDataObject);
   const encryptedPassword = bcrypt.hashSync(password, 10);
-  userDataObject[id] = { id, email, encryptedPassword };
-  return cb(null, { id, email });
+  userDataObject[id] = { id, email, password: encryptedPassword };
+  return cb(null, userDataObject[id]);
 };
 
 const setCookie = function(req, userID) {
