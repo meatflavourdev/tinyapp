@@ -238,6 +238,9 @@ app.get("/urls", getURLindex,  (req, res) => {
 // --------------------------------
 
 app.get("/login", (req, res) => {
+  if (req.session.user) {
+    return res.redirect('/urls');
+  }
   if (req.query.status === "notAuthorized") {
     res.locals.notAuthorized = true;
   }
