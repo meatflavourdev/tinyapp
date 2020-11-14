@@ -323,14 +323,13 @@ app.get("/urls/:shortID", checkAuth, (req, res) => {
 
 // Handle shortIDs-- redirect to long URL
 app.get("/u/:shortID", (req, res) => {
+  const url = getURL(req.params.shortID);
   // Error if shortID not valid
-  if (!(req.params.shortURL in urlDatabase)) {
-    const templateVars = { shortURL: req.params.shortURL };
-    res.status(404).render("error_NotFound", templateVars);
-    return;
+  if (!url) {
+    return res.status(404).render("error_NotFound", { shortID: req.params.shortID });
   }
   // Redirect to long URL
-  res.redirect(301, urlDatabase[req.params.shortURL]);
+  res.redirect(302, url.longURL);
 });
 
 // --------------------------------
