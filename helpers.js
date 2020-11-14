@@ -72,7 +72,7 @@ const removeURL = function(urlDatabase, shortID, userID) {
  * @return {Object} User object or null
  */
 const getUser = function(userID, userDataObject) {
-  if(!userID || !userDataObject) return null;
+  if (!userID || !userDataObject) return null;
   if (userID in userDataObject) {
     return userDataObject[userID];
   }
