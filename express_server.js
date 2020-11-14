@@ -248,6 +248,9 @@ app.get("/login", (req, res) => {
 });
 
 app.get("/register", (req, res) => {
+  if (req.session.user) {
+    return res.redirect('/urls');
+  }
   return res.render("auth_register");
 });
 
