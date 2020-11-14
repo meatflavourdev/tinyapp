@@ -1,11 +1,6 @@
 const express = require("express");
-const bcrypt = require('bcrypt');
-const validator = require("validator");
-const { charsetbase64, charsetbase62, generateRandomString } = require("./shortIDs");
-const PORT = 3000; // default port 8080
-const COOKIE_EXPIRE_MINS = 60;
-const USER_ID_LENGTH = 9;
-const SHORTID_LENGTH = 6;
+const { addURL, createUser, editURL, findUser, getURL, getUser, removeURL, setCookie, validPassword } = require("./helpers.js");
+const { PORT, COOKIE_EXPIRE_MINS } = require("./constants");
 
 // Initialize Express
 const app = express();
@@ -58,130 +53,6 @@ const users = {
 };
 
 // --------------------------------
-// HELPER FUNCTIONS
-// --------------------------------
-/**
- * Adds a url to the URL storage
- * @param  {String} longURL The full URL to the link to be shortened
- * @param  {String} userID  The userID of the user shortening a link
- * @param  {boolen} public=false The public visibility setting of the link
- * @return {Object} The created url object
- */
-const addURL = function(longURL, userID, public = false) {
-  const shortID = generateRandomString(SHORTID_LENGTH, charsetbase64);
-  urlDatabase[shortID] = { shortID, longURL, userID, public };
-  return urlDatabase[shortID];
-};
-
-/**
- * Retrieve the URL object from the URL storage object
- * @param  {String} id The shortID/shortID
- * @return {Object} Return the url object corresponding with the specified ID or false
- */
-const getURL = function (id) {
-  // Error if shortID not valid
-  if (!(id in urlDatabase)) {
-    return false;
-  }
-  return urlDatabase[id];
-};
-
-/**
- * Modify an existing url in the URL storage
- * @param  {String} shortID The ID of the URL to modify
- * @param  {String} userID  The userID of the current user
- * @param  {String} longURL The full URL to be updated
- * @param  {boolen} public=false The public visibility setting of the link to be set
- * @return {Object} The modified url object or false
- */
-const editURL = function(shortID, userID, longURL, public) {
-  const url = getURL(shortID);
-  if (!url) return false;
-  if (userID !== url.userID) return false;
-  urlDatabase[shortID].longURL = longURL;
-  urlDatabase[shortID].public = public;
-  return urlDatabase[shortID];
-};
-
-/**
- * Remove an existing url in the URL storage
- * @param  {String} shortID The ID of the URL to modify
- * @param  {String} userID  The userID of the current user
- * @return {boolen} TRUE on success, FALSE on failure
- */
-const removeURL = function(shortID, userID) {
-  const url = getURL(shortID);
-  if (!url) return false;
-  if (userID !== url.userID) return false;
-  delete urlDatabase[shortID];
-  return !getURL(shortID);
-};
-
-/**
- * Get user object from users stotage object by the user ID
- * @param  {String} userID Primary key identifying user
- * @param {Object} userDataObject An object containing key value pair of userIDs to user objects
- * @return {Object} User object or null
- */
-const getUser = function(userID, userDataObject) {
-  if (userID in userDataObject) {
-    return userDataObject[userID];
-  }
-  return null;
-};
-
-/**
- * Get user object from users stotage object by the email
- * @param  {String} email The user email address
- * @param {Object} userDataObject An object containing key value pair of userIDs to user objects
- * @return {Object} User object or null
- */
-const findUser = function(email, userDataObject) {
-  const user = Object.entries(userDataObject).find((value) => {
-    if (value[1].email === email) return true;
-  });
-  if (!user || user.length === 0) return false;
-  return user[1];
-};
-
-/**
- * Check if password input exsits and is valid given a user object
- * @param  {String} password password to validate
- * @param  {Object} user user to compare against
- */
-const validPassword = function(password, user) {
-  const valid = bcrypt.compareSync(password, user.password);
-  if (!password || !valid) return false;
-  return true;
-};
-
-// TODO Correctly Display Error Message on Client
-// TODO Refactor validation and error object
-// TODO Refactor error handling with middleware validators
-const createUser = function(userInput, userDataObject, cb) {
-  const { email, password, passwordConfirm } = userInput;
-  if (validator.isEmpty(email)) return cb({ field: ['email'], message: "Please enter an email address" });
-  if (!validator.isEmail(email)) return cb({ field: ['email'], message: "Please enter a valid email address" });
-  if (validator.isEmpty(password)) return cb({ field: ['password'], message: "Please enter a password" });
-  if (validator.isEmpty(passwordConfirm)) return cb({ field: ['passwordConfirm'], message: "Please enter a password confirmation" });
-  if (!validator.equals(password, passwordConfirm)) return cb({ field: ['password', 'passwordConfirm'], message: "Passwords do not match" });
-  if (findUser(email, userDataObject)) return cb({ field: ['email'], message: "Email address already in use" });
-  // Everything is OKW
-  let id;
-  do {
-    id = generateRandomString(USER_ID_LENGTH, charsetbase62);
-  } while (id in userDataObject);
-  const encryptedPassword = bcrypt.hashSync(password, 10);
-  userDataObject[id] = { id, email, password: encryptedPassword };
-  return cb(null, userDataObject[id]);
-};
-
-const setCookie = function(req, userID) {
-  req.session.user = userID;
-  return true;
-};
-
-// --------------------------------
 // MIDDLEWARE
 // --------------------------------
 app.use(function(req, res, next) {
@@ -214,6 +85,9 @@ app.get("/", (req, res) => {
 });
 
 app.get("/urls.json", getURLindex, (req, res) => {
+  if (req.session.user) {
+    return res.json(res.locals.user.urls);
+  }
   return res.json(res.locals.urls);
 });
 
@@ -255,7 +129,6 @@ app.post("/register", (req, res) => {
   });
 });
 
-// TODO Error display in client(?)
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
   // Check that user exists and password is correct
@@ -278,7 +151,7 @@ app.get("/logout", (req, res) => {
 // POST New short URL creation form handler
 app.post("/urls", checkAuth, (req, res) => {
   const public = req.body.public ? true : false;
-  const url = addURL(req.body.longURL, req.session.user, public);
+  const url = addURL(urlDatabase, req.body.longURL, req.session.user, public);
   return res.redirect(`/urls/${url.shortID}`);
 });
 
@@ -290,7 +163,7 @@ app.get("/urls/new", checkAuth, (req, res) => {
 
 // DELETE Remove short URL button handler
 app.post("/urls/:shortID/delete", checkAuth, (req, res) => {
-  const url = getURL(req.params.shortID);
+  const url = getURL(urlDatabase, req.params.shortID);
   // Error if shortID not valid
   if (!url) {
     return res.status(404).render("error_NotFound", { shortID: req.params.shortID });
@@ -300,7 +173,7 @@ app.post("/urls/:shortID/delete", checkAuth, (req, res) => {
     return res.status(401).render("error_NotAuthorized", url);
   }
   // Delete the URL and redirect to index
-  const removedURL = removeURL(req.params.shortID, req.session.user);
+  const removedURL = removeURL(urlDatabase, req.params.shortID, req.session.user);
   if (!removedURL) {
     return res.status(500).render("error_500"); // Something went wrong
   }
@@ -309,7 +182,7 @@ app.post("/urls/:shortID/delete", checkAuth, (req, res) => {
 
 // UPDATE Edit short URL form handler
 app.post("/urls/:shortID", checkAuth, (req, res) => {
-  const url = getURL(req.params.shortID);
+  const url = getURL(urlDatabase, req.params.shortID);
   // Error if shortID not valid
   if (!url) {
     return res.status(404).render("error_NotFound", { shortID: req.params.shortID });
@@ -321,7 +194,7 @@ app.post("/urls/:shortID", checkAuth, (req, res) => {
   // Save edit to the URLdatabase object
   const longURL = req.body.longURL;
   const public = req.body.public ? true : false;
-  const modifiedURL = editURL(url.shortID, req.session.user, longURL, public);
+  const modifiedURL = editURL(urlDatabase, url.shortID, req.session.user, longURL, public);
   if (!modifiedURL) {
     return res.status(500).render("error_500"); // Something went wrong
   }
@@ -333,7 +206,7 @@ app.post("/urls/:shortID", checkAuth, (req, res) => {
 // --------------------------------
 
 app.get("/urls/:shortID", checkAuth, (req, res) => {
-  const url = getURL(req.params.shortID);
+  const url = getURL(urlDatabase, req.params.shortID);
   // Error if shortID not valid
   if (!url) {
     return res.status(404).render("error_NotFound", { shortID: req.params.shortID });
@@ -348,7 +221,7 @@ app.get("/urls/:shortID", checkAuth, (req, res) => {
 
 // Handle shortIDs-- redirect to long URL
 app.get("/u/:shortID", (req, res) => {
-  const url = getURL(req.params.shortID);
+  const url = getURL(urlDatabase, req.params.shortID);
   // Error if shortID not valid
   if (!url) {
     return res.status(404).render("error_NotFound", { shortID: req.params.shortID });
@@ -362,7 +235,7 @@ app.get("/u/:shortID", (req, res) => {
 // --------------------------------
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function(err, req, res) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.status = err.status;
