@@ -235,15 +235,12 @@ app.get("/u/:shortID", (req, res) => {
 // --------------------------------
 
 // error handler
-app.use(function(err, req, res) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.status = err.status;
-  res.locals.error = req.app.get("env") === "development" ? err : {};
-  console.log(err);
+app.use(function(err, req, res, next) {
+  const { status, message, stack } = err;
+  console.log(status, message, stack);
   // render the error page
-  res.status(err.status || 500);
-  return res.render("error");
+  res.status(status || 500);
+  return res.render("error", { status, message, stack });
 });
 
 // --------------------------------
