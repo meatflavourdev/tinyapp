@@ -20,7 +20,7 @@
     "ejs": "^3.1.5",
     "express": "^4.17.1",
     "morgan": "^1.10.0",
-    "node-pre-gyp": "^0.16.0",
+    "node-pre-gyp": "^0.17.0",
     "validator": "^13.1.17"
   }
 }
